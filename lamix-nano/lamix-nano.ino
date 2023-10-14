@@ -11,9 +11,15 @@ struct {
 } phSensor;
 
 float voltageToPh(float voltage) {
+  // Mulitmeter readings
   // 3.99V for 0 pH
   // 3.85V for 7 pH
   // 3.71V for 14 pH
+  
+  // Arduino Readings
+  // Upper	4.61
+  // Lower	2.5
+  // Median	3.555
   // return 7 + ((3.85 - voltage) / 0.18);
   return (3.99 - voltage) / 0.02;
 }
