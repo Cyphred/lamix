@@ -108,14 +108,30 @@ void setup() {
 
 
 void loop() {
-  byte input = Serial.read();
-
-  if (input == '1') setFan(true);
-  else if (input == '2') setFan(false);
-  else if (input == '3') setHeater(true);
-  else if (input == '4') setHeater(false);
-  else if (input == '5') setPump(true);
-  else if (input == '6') setPump(false);
+  while (Serial.available()) {
+    byte input = Serial.read();
+    
+    switch (input) {
+      case '1':
+        setFan(true);
+        break;
+      case '2':
+        setFan(false);
+        break;
+      case '3':
+        setHeater(true);
+        break;
+      case '4':
+        setHeater(false);
+        break;
+      case '5':
+        setPump(true);
+        break;
+      case '6':
+        setPump(false);
+        break;
+    }
+  }
 
   sensors.requestTemperatures(); 
 
