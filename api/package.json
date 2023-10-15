@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc -w --preserveWatchOutput & nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "Jeremy Andrews Into Zantua <jeremyzantua@gmail.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.18.2",
+    "redis": "^4.6.10"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.19",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.2.2"
+  }
+}
