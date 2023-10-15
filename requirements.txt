@@ -1,6 +1,11 @@
 async-timeout==4.0.3
+certifi==2023.7.22
+charset-normalizer==3.3.0
 click==8.1.7
+idna==3.4
 OPi.GPIO==0.5.2
 pyserial==3.5
 redis==5.0.1
+requests==2.31.0
+urllib3==2.0.6
 w1thermsensor==2.3.0
