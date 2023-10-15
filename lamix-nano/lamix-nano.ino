@@ -14,12 +14,21 @@ DallasTemperature sensors(&oneWire);
 
 #define MQ3 A1
 #define PH A0
+#define FAN_RELAY 5
+#define HEATER_RELAY 4
+#define PUMP_RELAY 3
 
 struct {
   int pin = PH;
   int samples = 10;
-  float adc_resolution = 276.5;
+  float adc_resolution = 1024.0;
 } phSensor;
+
+struct {
+  bool fan = false;
+  bool heater = false;
+  bool pump = false;
+} relay_states;
 
 float voltageToPh(float voltage) {
   // Mulitmeter readings
@@ -43,7 +52,7 @@ float getPhReading() {
     delay(10);
   }
 
-  float voltage = 5 / phSensor.adc_resolution * measurings / phSensor.samples;
+  float voltage = 5.0 / phSensor.adc_resolution * measurings / phSensor.samples;
   return voltageToPh(voltage);
 }
 
@@ -52,14 +61,62 @@ float getEthanolReading() {
   return value;
 }
 
+void setFan(bool state) {
+  if (state) {
+    relay_states.fan = true;
+    digitalWrite(FAN_RELAY, LOW);
+  } else {
+    relay_states.fan = false;
+    digitalWrite(FAN_RELAY, HIGH);
+  }
+}
+
+void setHeater(bool state) {
+  if (state) {
+    relay_states.heater = true;
+    digitalWrite(HEATER_RELAY, LOW);
+  } else {
+    relay_states.heater = false;
+    digitalWrite(HEATER_RELAY, HIGH);
+  }
+}
+
+void setPump(bool state) {
+  if (state) {
+    relay_states.pump = true;
+    digitalWrite(PUMP_RELAY, LOW);
+  } else {
+    relay_states.pump = false;
+    digitalWrite(PUMP_RELAY, HIGH);
+  }
+}
+
 void setup() {
   sensors.begin();
   Serial.begin(9600);
+  pinMode(FAN_RELAY, OUTPUT);
+  pinMode(HEATER_RELAY, OUTPUT);
+  pinMode(PUMP_RELAY, OUTPUT);
+
+  // Turn off all relays
+  setFan(false);
+  setHeater(false);
+  setPump(false);
+
   delay(100);
 }
 
 
 void loop() {
+  byte input = Serial.read();
+
+  if (input == '1') setFan(true);
+  else if (input == '2') setFan(false);
+  else if (input == '3') setHeater(true);
+  else if (input == '4') setHeater(false);
+  else if (input == '5') setPump(true);
+  else if (input == '6') setPump(false);
+
   sensors.requestTemperatures(); 
 
   float temp = sensors.getTempCByIndex(0);
@@ -71,8 +128,13 @@ void loop() {
   Serial.print(ethanol);
   Serial.print(",");
   Serial.print(temp);
+  Serial.print(",");
+  Serial.print(relay_states.fan);
+  Serial.print(",");
+  Serial.print(relay_states.heater);
+  Serial.print(",");
+  Serial.print(relay_states.pump);
+
 
   Serial.println();
-
-  delay(400);
 }
