@@ -1,5 +1,16 @@
 #include <Arduino.h>
 #include <DallasTemperature.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+// Data wire is plugged into digital pin 2 on the Arduino
+#define ONE_WIRE_BUS 2
+
+// Setup a oneWire instance to communicate with any OneWire device
+OneWire oneWire(ONE_WIRE_BUS);	
+
+// Pass oneWire reference to DallasTemperature library
+DallasTemperature sensors(&oneWire);
 
 #define MQ3 A1
 #define PH A0
@@ -42,26 +53,26 @@ float getEthanolReading() {
 }
 
 void setup() {
+  sensors.begin();
   Serial.begin(9600);
   delay(100);
 }
 
 
 void loop() {
+  sensors.requestTemperatures(); 
+
+  float temp = sensors.getTempCByIndex(0);
   float ph = getPhReading();            // 100ms
   float ethanol = getEthanolReading();  // 0ms
 
-  Serial.print("[");
-
-  Serial.print("<");
   Serial.print(ph);
-  Serial.print(">");
-
-  Serial.print("<");
+  Serial.print(",");
   Serial.print(ethanol);
-  Serial.print(">");
+  Serial.print(",");
+  Serial.print(temp);
 
-  Serial.print("]");
+  Serial.println();
 
   delay(400);
 }
