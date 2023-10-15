@@ -8,6 +8,11 @@ interface Device {
   fan_relay: boolean;
   heater_relay: boolean;
   pump_relay: boolean;
+  set: {
+    fan: boolean;
+    heater: boolean;
+    pump: boolean;
+  };
 }
 
 interface DeviceDocument extends Device, Document {}
@@ -20,6 +25,11 @@ const DeviceSchema: Schema<DeviceDocument> = new Schema<DeviceDocument>({
   fan_relay: { type: Boolean, required: true },
   heater_relay: { type: Boolean, required: true },
   pump_relay: { type: Boolean, required: true },
+  set: {
+    fan: { type: Boolean, default: false },
+    pump: { type: Boolean, default: false },
+    heater: { type: Boolean, default: false },
+  },
 });
 
 export const DeviceModel: Model<DeviceDocument> =
