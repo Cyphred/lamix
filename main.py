@@ -2,34 +2,29 @@ import time
 import OPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
-from w1thermsensor import W1ThermSensor
-temp_sensor = W1ThermSensor()
+test_relay=13 # PA0
+GPIO.setup(test_relay, GPIO.OUT)
+relays=[test_relay]
 
-# PA0
-relay_pin=13 
-
-# PA3
-mq3_pin=15 
-
-GPIO.setup(mq3_pin, GPIO.IN)
-GPIO.setup(relay_pin, GPIO.OUT)
+def set_relay(pin, state):
+    if state is True:
+        GPIO.output(pin, GPIO.LOW)
+    else:
+        GPIO.output(pin, GPIO.HIGH)
 
 def loop():
-    gas=GPIO.input(mq3_pin)
-    temp = temp_sensor.get_temperature()
-
-    print(f"Temperature: {temp}")
-    print(f"Gas: {gas}")
-
-    print(GPIO.HIGH)
-
+    set_relay(test_relay, True)
+    time.sleep(1)
+    set_relay(test_relay, False)
     time.sleep(1)
 
-def set_relay(state):
-    if state is True:
-        GPIO.output(relay_pin, GPIO.LOW)
-    else:
-        GPIO.output(relay_pin, GPIO.HIGH)
+def kill_all_relays():
+    for relay in relays:
+        set_relay(relay, False)
 
 while True:
-    loop()
+    try:
+        loop()
+    except:
+        kill_all_relays() # For safety, turn off all relays before exiting
+        exit()
